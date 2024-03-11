@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% block "main" %}
+
+            <div class="row">
+                <div class="col-md-9 mt-5 mx-auto">
+                    {% if msg_success %}
+                    <div class="alert alert-success">{{msg_success}}</div>
+                   {% endif %}
+                    {% if msg %}
+                    <div class="alert alert-danger">
+                        {{msg}}
+                      </div>
+                    {% endif %}
+
+                    <div class="row">
+                        {% for i in data %}
+                        <div class="col-md-7">
+                           <img src="{% static 'images/shirt.png' %}" class="card-img-top" alt="..." height="300px" width="200px">
+                        </div>
+                        <div class="col-md-5">
+                            <b>Product Name :</b>{{ i.name }}<br>
+                            <b>Category :</b>{{ i.cat }}<br>
+                            <b>Price :</b>{{ i.price }} <br>
+                            <b>Fabric :</b>{{ i.product_details }} <br><br>
+                            <a href="/cart/{{ i.id }}" class="btn btn-danger">Add To Cart</a>
+                            <a href="/view_cart" class="btn btn-danger">View Cart</a>
+                            <a href="/home" class="btn btn-danger">Shop More</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                  
+                </div>
+            </div>
+
+{% endblock "main" %}
+          

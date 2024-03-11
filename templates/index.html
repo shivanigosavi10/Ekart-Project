@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+{% block "main" %}
+
+      <div class="row">
+        <div class="col-md-3 p-3 bg-light">
+          <h5>Filter By Category</h5>
+          <hr>
+          <a href="/product" class="anchor">All</a><br>
+          <a href="/catfilter/1" class="anchor">Mobile</a><br>
+          <a href="/catfilter/2" class="anchor">Shoes</a><br>
+          <a href="/catfilter/3" class="anchor">Cloths</a><br>
+
+          <h5>Sort By Price</h5>
+          <hr>
+          <a href="/sort/1" class="anchor">High To Low</a>
+          <a href="/sort/0" class="anchor">Low To High</a>
+
+          <h5>Fliter By Price</h5>
+          <hr>
+          <form method="GET" action="/filterbyprice">
+            <div class="mb-3">
+              <label for="input1" class="form-label">Min</label>
+              <input type="number" class="form-control" name="min" id="Input1" placeholder="Minimum Price">
+            </div>
+            <div class="mb-3">
+              <label for="input2" class="form-label">Max</label>
+              <input type="number" class="form-control" name="max" id="Input2" placeholder="Minimum Price">
+            </div>
+            <div class="mb-3">
+              <input type="submit" class="btn btn-danger" value="search">
+            </div>
+
+          </form>
+
+        </div>
+
+
+        <!--<div class="row"> Main Row start-->
+
+        <!-- <div class="col-md-3">
+          <h4>side bar</h4>
+        </div>
+        <hr> -->
+
+        <div class="col-md-8">
+          {% for i in product %}
+          <div class="row">
+
+            <div class="col-md-3">
+              <div class="card" style="width: 18rem;">
+                <img src="{% static 'images/shirt.png' %}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">{{i.name}}</h5>
+                  <p class="card-title">{{i.price}}</p>
+                  <p class="card-title">{{i.product_details}}</p>
+                  {% if i.cat == 1 %}
+                  <p class="card-text">Mobile</p>
+                  {% elif i.cat == 2 %}
+                  <p class="card-text">Shoes</p>
+                  {% else %}
+                  <p class="card-text">Cloths</p>
+                 {% endif %}
+                 {% comment %} <p class="card-text">Best Quality T-shirt{{i.price}}</p> {% endcomment %}
+               
+                  <a href="/product_details/{{i.id}}" class="btn btn-primary">See Details</a>
+                </div>
+              </div>
+              {% endfor %}
+            
+
+            {% comment %} <div class="col-md-3">
+              <div class="card" style="width: 18rem;">
+                <img src="{% static 'images/shirt.png' %}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Blue T-shirt</h5>
+                  <p class="card-text">Best Quality T-shirt</p>
+                  <a href="/productdetails" class="btn btn-primary">See Details</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="card" style="width: 18rem;">
+                
+                <img src="{% static 'images/shirt.png' %}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Blue T-shirt</h5>
+                  <p class="card-text">Best Quality T-shirt</p>
+                  <a href="/productdetails" class="btn btn-primary">See Details</a>
+                </div>
+              </div>
+            </div> 
+
+            <div class="col-md-3">
+              <div class="card" style="width: 18rem;">
+                <img src="{% static 'images/shirt.png' %}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Blue T-shirt</h5>
+                  <p class="card-text">Best Quality T-shirt</p>
+                  <a href="/productdetails" class="btn btn-primary">See Details</a>
+                </div>
+              </div>
+            </div> {% endcomment %}
+
+          </div>
+        </div>
+      </div><!--product list-->
+
+        <!-- </div> -->
+      </div>
+    </div><!--main row close-->
+
+   {% endblock "main" %}
