@@ -1,5 +1,6 @@
 from django.db import models
 #from django.contrib.auth import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -17,6 +18,11 @@ from django.db import models
 
 #     def __str__(self) -> str:
 #         return self.name
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    forgot_password_token = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add = True)
     
    
 
@@ -50,3 +56,28 @@ class MyOrder(models.Model):
     pid = models.ForeignKey('Product', on_delete = models.CASCADE, db_column = 'pid')
     qty = models.IntegerField(default = 1)
     amt = models.FloatField()
+
+
+class Address(models.Model):
+    # first_name = models.CharField(max_length=50, blank=False, null=False)
+    # last_name = models.CharField(max_length=50, blank=False, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # foreign key to user table
+    address = models.CharField(max_length=80, blank=False, null=False)
+    phone_number = models.CharField(max_length=15, blank=False, null=False)
+
+# class data(models.Model):
+#     user_id = models.ForeignKey('auth.User', on_delete = models.CASCADE, db_column = 'user_id')
+#     pid = models.ForeignKey('Address', on_delete = models.CASCADE, db_column = 'pid')
+#     address = models.ForeignKey('Address', on_delete = models.CASCADE, db_column = 'address')
+#     contact = models.ForeignKey('Address', on_delete = models.CASCADE, db_column = 'phone_number')
+
+# class info(models.Model):
+#     user_id = models.ForeignKey(User, on_delete = models.CASCADE, db_column = 'user_id')
+#     address = models.CharField(max_length=80, blank=False, null=False)
+#     phone_number = models.CharField(max_length=15, blank=False, null=False)
+    
+class info_data(models.Model):
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    address = models.CharField(max_length=80, blank=False, null=False)
+    city = models.CharField(max_length=80, blank=False, null=False)
+    phone_number = models.CharField(max_length=15, blank=False, null=False)

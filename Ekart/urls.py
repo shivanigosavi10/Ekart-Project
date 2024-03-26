@@ -40,7 +40,11 @@ urlpatterns = [
      path('placeorder/', views.placeorder),
      path('fetchorder/', views.fetchorder),
      path('makepay', views.makepayment),
-     path('paymentsuccess/', views.paymentsuccess)
+     path('paymentsuccess/', views.paymentsuccess),
+     path('add_address',views.createAddress , name='add_address'),
+     path('infodata/',views.infodata)
+    #  path('change_pass/<token>/', views.ChangePassword),
+    #  path('forgot_password/', views.forgot_password),
      
 ]
 

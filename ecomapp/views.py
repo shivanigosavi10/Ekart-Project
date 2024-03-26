@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
-from .models import Product,Cart,Order, MyOrder
+from .models import Product,Cart,Order, MyOrder,Profile, Address,info_data
 from django.db.models import Q
 import random
 import razorpay
 from django.core.mail import send_mail
+from .helper import send_forgot_password_mail
 
 # Create your views here.
 def hello(request):
@@ -18,7 +20,9 @@ def register(request):
           name=request.POST["uname"]
           upass1=request.POST["upass"]
           upass2=request.POST["ucom"]
-          if name==' ' or upass1=='' or upass2=='':
+          telep=request.POST["utel"]
+          address=request.POST["uadd"]
+          if name==' ' or upass1=='' or upass2=='' or telep=='' or address == '':
             context['errmsg']="Feild cannot be empty!!!"
             return render(request,'register.html',context)
           elif upass1!= upass2:
@@ -26,9 +30,13 @@ def register(request):
             return render (request,'register.html',context)
           else:
             try:     
-               u=User.objects.create(username=name,email=name,password=upass1)
+               u=User.objects.create(username=name,email=name)
                u.set_password(upass1)
                u.save()
+               m=info.objects.create(phone_number=telep,address=address)
+               m.save()
+               print(m)
+            #    return redirect('/login/')
                context['success']="register succesfully!!!"
                return render (request,'register.html',context)
             except Exception:
@@ -60,8 +68,41 @@ def user_login(request):
                 
      else:
          return render(request,"login.html")
-                
+     
 
+
+# def ChangePassword(request, token):
+#     context ={}
+#     try:
+#         profile_obj = Profile.objects.get(forgot_password_token = token)
+
+#         print(profile_obj)
+
+#     except Exception as e:
+#         print(e)
+#     return render(request, 'change_password.html')
+
+
+# import uuid
+# def forgot_password(request):
+#     try:
+#         if request.method == 'POST':
+#            username = request.POST.get('uname')
+
+#            if not User.objects.filter(username=username).first():
+#                 messages.success(request, 'No User Found this username.')
+#                 return render('/forgot_password')
+           
+#            user_obj = User.ob.get(username = username)
+#            token = str(uuid.uuid4())
+#            send_forgot_password_mail(user_obj, token)
+#            messages.success(request, 'An email is send.')
+#            return render('/forgot_password')
+
+#     except Exception as e:
+#         print(e)
+#         return render(request, 'forgot_password.html')
+       
 def home(request):
      return render(request,"index.html")
 
@@ -124,7 +165,7 @@ def pdetails(request,pid):
 
 
 def placeorder(request):
-     return render(request,"placeorder.html")
+     return render(request,"placeorder2.html")
 
 def user_logout(request):
      logout(request)
@@ -191,11 +232,13 @@ def placeorder(request):
         amount = x.pid.price * x.qty
         o = Order.objects.create(order_id = oid, user_id = x.user_id, pid = x.pid, qty= x.qty, amt=amount)
         o.save()
-        x.delete()
+        # x.delete()
     return redirect("/fetchorder")
 
 def fetchorder(request):
     o = Order.objects.filter(user_id = request.user.id)
+    u = User.objects.filter(id = request.user.id)
+    m = info_data.objects.filter(user_id = request.user.id)
     tot=0
     for x in o:
         tot=tot+x.amt
@@ -203,6 +246,9 @@ def fetchorder(request):
     context['data']=o
     context['tot']=tot
     context['n']=len(o)
+    context['name'] = u[0].first_name + ' ' + u[0].last_name   # concating first and last name
+    context['un'] = u[0].username
+    context['data'] = m
     return render(request,'placeorder.html',context)
 
 def makepayment(request):
@@ -241,3 +287,30 @@ def paymentsuccess(request):
         mo.save()
     x.delete()
     return HttpResponse('payment success !!')
+
+def createAddress(request):  # function for create address
+    if request.method == 'POST':
+        user = request.user  # get user from request
+        address = request.POST['address']
+        phone = request.POST['phone_number']
+        address = Address(user=user, address=address, phone_number=phone)
+        address.save()
+        context ={}
+        context['address']=address
+        return redirect('/fetchorder', context)
+    else:
+        return redirect('/login')
+    
+def infodata(request):  # function for create address
+    if request.method == 'POST':
+        user = request.user  # get user from request
+        address = request.POST['uadd']
+        city = request.POST['ucity']
+        phone = request.POST['utel']
+        address = info_data(user=user, address=address, city=city, phone_number=phone)
+        address.save()
+        return render(request, "profile.html")
+    else:
+        return redirect('/login')
+    
+    # return render(request, "profile.html")
